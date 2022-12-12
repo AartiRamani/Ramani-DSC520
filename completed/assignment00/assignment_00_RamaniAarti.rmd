@@ -56,10 +56,10 @@ class_name
 ## Print the value of is_good
 ## Assigning TRUE as a string
 is_good <- 'TRUE' 
-is_good 
+
+class(is_good) 
 ## Assigning TRUE as a bool
-is_good <- TRUE
-is_good
+is_good <- TRUE 
 
 ## Check the class of the variable is_good using the `class()` function
 class(is_good)
