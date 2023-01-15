@@ -1,0 +1,121 @@
+---
+output:
+  pdf_document:  
+  html_document: default
+---
+
+# Assignment: Week 5 
+# Name: Ramani, Aarti
+# Date: 2023-01-14
+```{r} 
+library(readxl)
+setwd("C:/Masters/GitHub/Winter2022/Ramani-DSC520")  
+housing_df <- read_excel(path = "C:/Masters/GitHub/Winter2022/Ramani-DSC520/data/week-6-housing.xlsx",
+                         .name_repair = function(col){ gsub(" ", "_", col) }) 
+
+#Using the dplyr package, use the 6 different operations to analyze/transform 
+#the data - GroupBy, Summarize, Mutate, Filter, Select, and Arrange 
+library(dplyr)
+  
+# GROUP BY and GROUP KEYS
+#GROUP_KEYS is depricated as of dplyr 1.0.0
+price_df <-  housing_df %>% group_by(zip5, ctyname) 
+price_df
+price_df <-  housing_df %>% group_by(zip5, ctyname) %>% tally() 
+price_df
+#price_df <-  housing_df %>% group_keys(zip5, ctyname)  
+#price_df <-  housing_df %>% group_keys(zip5, sale_reason) 
+price_df <-  housing_df %>% group_by(zip5, sale_reason) %>% tally()
+price_df
+
+# SUMMARIZE
+price_df <-  housing_df %>% group_by(zip5, ctyname) %>% summarize(AvgPrice = mean(Sale_Price))
+price_df
+
+# SELECT
+price_df <-  housing_df %>% 
+  select(one_of ('Sale_Price', 'sale_reason', 'zip5','ctyname', 'square_feet_total_living', 
+                 'bedrooms', 'sq_ft_lot' ))
+price_df
+
+# MUTATE
+price_df <-  housing_df %>% 
+  mutate(Sq_yards_total_living = square_feet_total_living/9)
+names(price_df) 
+price_df
+
+# MUTATE AND SELECT
+price_df <-  housing_df %>% 
+  select(one_of ('Sale_Price', 'sale_reason', 'zip5','ctyname', 'square_feet_total_living', 
+               'bedrooms', 'sq_ft_lot' )) %>% 
+  mutate(Sq_yards_total_living = square_feet_total_living/9)
+price_df
+
+# FILTER
+price_df <-  housing_df %>% 
+  select(one_of ('Sale_Price', 'sale_reason', 'zip5','ctyname', 'square_feet_total_living', 
+                 'bedrooms', 'sq_ft_lot' )) %>%
+  filter(is.na(ctyname)) 
+price_df
+
+# ARRANGE
+price_df <-  housing_df %>% 
+  select(one_of ('Sale_Price', 'sale_reason', 'zip5','ctyname', 'square_feet_total_living', 
+                 'bedrooms', 'sq_ft_lot' )) %>%
+  filter(is.na(ctyname)) %>% 
+  mutate(Sq_yards_total_living = square_feet_total_living/9) %>%
+  arrange(desc(Sq_yards_total_living))
+price_df
+
+#Using the purrr package – perform 2 functions on your dataset.  
+library(purrr)
+#You could use zip_n, keep, discard, compact, etc.
+#MAP
+#housing_df %>% map_dbl(mean) 
+housing_df %>% map(mean) 
+
+#KEEP
+
+#sale_price_1m <- housing_df$Sale_Price %>% map(mean) %>% 
+#  keep(~mean(.x) >= 1000000)
+sale_price_4380542 <- housing_df$Sale_Price %>%
+  keep(housing_df$Sale_Price == 4380542)
+length(sale_price_4380542)
+
+#DISCARD
+#sale_price_discard_1m <- housing_df$Sale_Price %>% map(mean) %>% 
+#  discard(~mean(.x) >= 1000000)
+#length(sale_price_discard_1m)
+sale_price_not_4380542 <- housing_df$Sale_Price %>%
+  discard(housing_df$Sale_Price == 4380542)
+length(sale_price_not_4380542)
+
+# Use the cbind and rbind function on your dataset
+#CBIND
+price_loc_df = data.frame("SalePrice"=housing_df$Sale_Price, "Zip"=housing_df$zip5,"CityName"=housing_df$ctyname)
+length(price_loc_df)
+house_df <- data.frame("Bedrooms"=housing_df$bedrooms, "Sq.Ft"=housing_df$square_feet_total_living)
+length(house_df)
+cbind_housing_df <- cbind(price_loc_df,house_df ) 
+nrow(cbind_housing_df)  
+length(cbind_housing_df)
+head(cbind_housing_df)
+
+#RBIND
+price_4380542 <- housing_df[housing_df$Sale_Price == 4380542,]
+price_not_4380542 <- housing_df[housing_df$Sale_Price != 4380542,]
+nrow(price_4380542)
+nrow(price_not_4380542)
+rbind_housing_df <- rbind(price_4380542,price_not_4380542)
+nrow(rbind_housing_df)
+rbind_housing_df[order(housing_df$zip5, housing_df$ctyname),]
+
+#Split a string, then concatenate the results back together
+#SPLIT 
+split_str <- strsplit(housing_df[housing_df$Sale_Price>3000000,]$sale_warning, " ") 
+split_str
+
+#PASTE
+str_paste <- paste(split_str)
+str_paste
+```
