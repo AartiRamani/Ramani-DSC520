@@ -1,0 +1,176 @@
+---
+title: "Final Project"
+author: "Aarti Ramani"
+date: "2023-02-07"
+output:
+  pdf_document: default
+  html_document: default
+bibliography: citations.bib
+biblio-style: "apalike"
+link-citations: true 
+---
+  
+## Project Topic: Airline On-Time Performance, Delays, and Cancellations
+
+## Introduction:
+
+For the final project I would like to analyze airline data to identify different
+factors and their effects on a carrier's performance. As a performance measure, 
+we would be exploring on-time arrivals, number of cancellations by carrier and 
+also explore different reasons for a carrier delay.
+Data Science can help identify the major causes of delay and cancellations per carrier. Based on the outcome, carriers can take necessary actions to focus on the problem areas.  
+
+## Problem statement addressed:
+
+This study would benefit airlines by comparing their performances and predicting possibilities of delay based on aircraft/origin/destination and apply corrective measures to reduce cancellations and delays and to improve on-time performance.
+
+## Research Questions 
+Following are the topics I would like to focus on as part of this project.
+
+1. Are small carriers reliable in terms of lesser cancellations and delays? 
+2. Are the delays seasonal? If yes, which regions are most affected?
+3. Does the time of day have any significance on delays?
+4. Which carrier has the best on-time performance.
+5. Which carrier has the least on-time performance.
+6. Identifying the most common cancellation reason for all carriers.
+7. Which carrier has the most number of cancellations.
+8. Which carrier has the most number of delays.
+9. What is the percentage of delays by reason.
+
+
+## Approach:
+I will be performing the following steps:
+
+1. Data analysis - Gathering and understanding different datasets.
+2. Data Cleaning and Transforming
+3. Merge transformed/cleansed datasets
+4. Data visualization/plotting
+
+## Addressing the problem 
+Based on the outcomes from data analysis and visualization, 
+I would like to identify the following:
+
+- Which carriers are more likely to cause delays or cancellations.
+- Which carriers are more reliable in terms of on-time performance.
+ 
+
+## Datasets
+
+Below data submitted by major carriers to department of transportation (DOT).
+
+ - Flights.csv
+ - UniqueCarriers.csv
+ - Airports.csv
+
+Data was collected by DOT's Bureau of Transportation Statistics for the year 2022.
+The purpose of this data is to analyze airline on-time performance reported by carriers. The datasets has around 40 fields in total of which I will be considering between 15 to 25 columns for analysis. 
+
+## Datasets and Relationships: 
+TABLE: **Flights.csv**
+
+Column Name                      | Data Type| Column Description
+---------------------------------| ---------| -----------------------------------------
+Year	                           |Integer   | Year of extracted flight data
+Quarter	                         |Integer   | Quarter 
+Month	                           |Integer   | Month of extracted flight data
+DayofMonth                       |Integer   | Day of month 
+DayOfWeek                        |Integer   | Day of Week
+FlightDate                       |Date      | Flight Date
+Marketing_Airline_Network        |Character | Marketing Carrier Airline Code
+Flight_Number_Marketing_Airline  |Integer   | Marketing Carrier Flight Number
+Operating_Airline                |Character | Operating Carrier Airline Code
+Tail_Number	                     |Integer   | Operating Carrier Tail Number
+Flight_Number_Operating_Airline  |Integer   | Operating Carrier Flight Number
+Origin	                         |Character | Origin Airport Code(Airports.csv )
+OriginCityName	                 |Character | Origin Airport City Name
+OriginState                      |Character | Origin Airport State Code
+OriginStateName                  |Character | Origin Airport State Name
+OriginWac                        |Integer   | Origin Airport Worlde Area Code
+Dest                             |Character | Destination Airport Code(Airports.csv )
+DestCityName                     |Character | Destination Airport City Name
+DestState                        |Character | Destination Airport State Code
+DestStateName                    |Character | Destination Airport State Name
+DestWac                          |Integer   | Destination Airport Worlde Area Code
+CRSDepTime                       |Integer   | CRS Departure Time (local time: hhmm)
+DepTime	                         |Integer   | Actual Departure Time(local time: hhmm)
+DepDelay	                       |Integer   | Difference in minutes between scheduled and actual departure time. Early departures show negative numbers.
+DepDelayMinutes	                 |Integer   | Difference in minutes between scheduled and actual departure time. Early departures set to 0
+DepDel15                         |Integer   | Departure Delay Indicator, 15 Minutes or More (1=Yes)
+TaxiOut                          |Integer   | Taxi Out Time, in Minutes
+WheelsOff                        |Integer   | Wheels Off Time (local time: hhmm)
+WheelsOn                         |Integer   | Wheels On Time (local time: hhmm)
+TaxiIn                           |Integer   | Taxi In Time, in Minutes
+CRSArrTime                       |Integer   | CRS Arrival Time (local time: hhmm)
+ArrTime	                         |Integer   | Actual Arrival Time (local time: hhmm)
+ArrDelay	                       |Integer   | Difference in minutes between scheduled and actual arrival time. Early arrivals show negative numbers.
+ArrDelayMinutes	                 |Integer   | Difference in minutes between scheduled and actual arrival time. Early arrivals set to 0.   
+ArrDel15	                       |Integer   | Arrival Delay Indicator, 15 Minutes or More (1=Yes)
+Cancelled	                       |Integer   | Cancelled Flight Indicator (1=Yes)
+CancellationCode                 |Integer   | Specifies The Reason For Cancellation
+Diverted                         |Integer   | Diverted Flight Indicator (1=Yes)
+CRSElapsedTime                   |Integer   | CRS Elapsed Time of Flight, in Minutes
+ActualElapsedTime                |Integer   | Elapsed Time of Flight, in Minutes
+AirTime                          |Integer   | Flight Time, in Minutes
+Flights	                         |Integer   | Number of Flights
+Distance                         |Integer   | Distance between airports (miles)
+DistanceGroup                    |Integer   | Distance Intervals, every 250 Miles, for Flight Segment
+CarrierDelay                     |Integer   | Carrier Delay, in Minutes
+WeatherDelay	                   |Integer   | Weather Delay, in Minutes
+NASDelay	                       |Integer   | National Air System Delay, in Minutes
+SecurityDelay	                   |Integer   | Security Delay, in Minutes
+LateAircraftDelay	               |Integer   | Late Aircraft Delay, in Minutes
+
+TABLE: **UniqueCarriers.csv**
+
+Column Name                      | Data Type| Column Description
+---------------------------------| ---------| -----------------------------------------
+Code                             | Character| Unique Airline Carrier Code
+Description                      | Character| Airline Carrier Code Description
+
+
+TABLE: **Airports.csv** 
+
+Column Name                      | Data Type| Column Description
+---------------------------------| ---------| -----------------------------------------
+Code                             | Character| Airport Code (IATA)
+Description                      | Character| Airport Code Description
+
+\newpage
+## Data Considerations:
+The following rows will be dropped from the dataset:
+
+- Rows that do not qualify for delay or cancellation
+- Rows with missing values for carrier, origin, destination, date and time of    
+  departure and arrival will be dropped.
+ 
+## Packages
+Following packages are required for the project:
+
+i. dplyr
+ii. ggplot2
+iii. readr
+iv. tidyr
+
+## Plots & Tables
+Plots that I would like to explore:
+
+i. Scatter plot 
+ii. Pie chart   
+iii. Histogram
+    
+I will create tables with the following data:
+
+A summary table of on-time performance, delays, and cancellations per carrier. 
+
+
+## Questions
+It is unclear if I would be able to recommend the right area of focus for better performance, to the airlines. 
+
+For example: 
+If the majority of delays are due to NAS - National Air System Delay, 
+it could mean there was an issue in one or more areas such as mechanical, crew, airport operations etc. 
+I would need to identify another dataset that logs the maintenance or operational issues by carrier. This information could be hard to get as it is carrier specific and probably not allowed to be made public.
+
+
+## Citations
+[@airlinedataset]
