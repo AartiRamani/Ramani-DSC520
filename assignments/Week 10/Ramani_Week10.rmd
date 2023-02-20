@@ -1,0 +1,114 @@
+---
+title: "Assignment 10.2"
+author: "Aarti Ramani"
+date: "2023-02-16"
+output:
+  pdf_document: default
+  html_document: default
+---
+  
+```{r}
+## Set the working directory to the root of your DSC 520 directory
+setwd("C:/Masters/GitHub/Winter2022/Ramani-DSC520")
+library(dplyr)
+```
+
+## 1. Thoracic Surgery Binary Dataset
+
+```{r}
+library(foreign)
+thoraric_df <- read.arff("C:/Masters/GitHub/Winter2022/Ramani-DSC520/data/ThoraricSurgery.arff")
+names(thoraric_df)
+nrow(thoraric_df)
+head(thoraric_df)
+  
+#1. DGN:   Diagnosis - specific combination of ICD-10 codes for primary 
+#          and secondary as well multiple tumours if any 
+#          (DGN3,DGN2,DGN4,DGN6,DGN5,DGN8,DGN1)
+#2. PRE4:  Forced vital capacity - FVC (numeric)
+#3. PRE5:  Volume that has been exhaled at the end of the first second of 
+#          forced expiration - FEV1 (numeric)
+#4. PRE6:  Performance status - Zubrod scale (PRZ2,PRZ1,PRZ0)
+#5. PRE7:  Pain before surgery (T,F)
+#6. PRE8:  Haemoptysis before surgery (T,F)
+#7. PRE9:  Dyspnoea before surgery (T,F)
+#8. PRE10: Cough before surgery (T,F)
+#9. PRE11: Weakness before surgery (T,F)
+#10.PRE14: T in clinical TNM - size of the original tumour, 
+#          from OC11 (smallest) to OC14 (largest) (OC11,OC14,OC12,OC13)
+#11.PRE17: Type 2 DM - diabetes mellitus (T,F)
+#12.PRE19: MI up to 6 months (T,F)
+#13.PRE25: PAD - peripheral arterial diseases (T,F)
+#14.PRE30: Smoking (T,F)
+#15.PRE32: Asthma (T,F)
+#16.AGE: Age at surgery (numeric)
+#17.Risk1Y: 1 year survival period - (T)rue value if died (T,F)
+ 
+
+#Fit a binary logistic regression model to the data set that predicts whether or 
+#not the patient survived for one year (the Risk1Y variable) after the surgery. 
+#Use the glm() function to perform the logistic regression. 
+#See Generalized Linear Models for an example. 
+#Include a summary using the summary() function in your results.
+
+result.0 <- glm(Risk1Yr ~ 1, data = thoraric_df, family = binomial())
+summary(result.0)
+
+result.1 <- glm(Risk1Yr ~ DGN + PRE4 +PRE5 +PRE6 +PRE7 +PRE8 +PRE9 +PRE10+
+                PRE11 +PRE14 +PRE17 +PRE19 +PRE25 +PRE30 +PRE32+
+                AGE ,data = thoraric_df, family=binomial(link="logit"))
+summary(result.1)
+
+#According to the summary, which variables had the greatest effect on the survival rate? 
+# 
+#Following variables have the greatest effect on the survival rate - 
+#PRE14OC14 - Size of the original tumour = 0.00668
+#PRE9 - Dyspnoea before surgery  = 0.00494
+#PRE17 - Type 2 DM - diabetes mellitus = 0.03709
+#PRE30T - Smoking = 0.02984 
+
+
+#To compute the accuracy of your model, use the dataset to predict the outcome variable. 
+#The percent of correct predictions is the accuracy of your model. 
+#What is the accuracy of your model? 
+
+# Add a column for T and F for predictions based on the probability above 0.5
+thoraric_df$probability <- if_else(fitted(result.1)  > .5, T, F)
+head(thoraric_df)
+
+# Compare predicted values with actual values
+thoracic_compare <- table(actual=thoraric_df$Risk1Yr, predicted=thoraric_df$probability)
+thoracic_compare
+
+# Compute the accuracy
+round((thoracic_compare[[1,1]] + thoracic_compare [[2,2]]) / sum(thoracic_compare),4)*100
+# the model is 83.62% accurate 
+```
+
+## 2. binary-classifier-data.csv 
+```{r}
+binary_df <- read.csv("C:/Masters/GitHub/Winter2022/Ramani-DSC520/data/binary-classifier-data.csv")
+names(binary_df)
+nrow(binary_df)
+head(binary_df)
+
+
+binary_glm <- glm(label ~ x + y,data = binary_df, family=binomial(link="logit"))
+binary_glm
+
+summary(binary_glm)
+
+
+# Add a column for T and F for predictions based on the probability above 0.5
+binary_df$probability <- if_else(fitted(binary_glm)  > .5, T, F)
+head(binary_df)
+
+# Compare predicted values with actual values
+binary_compare <- table(actual=binary_df$label, predicted=binary_df$probability)
+binary_compare
+
+# Compute the accuracy
+round((binary_compare[[1,1]] + binary_compare [[2,2]]) / sum(binary_compare),4)*100 
+# the model is 58.3% accurate 
+ 
+```
