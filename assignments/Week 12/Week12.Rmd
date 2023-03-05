@@ -1,0 +1,214 @@
+---
+title: "Assignment 11.2"
+author: "Aarti Ramani"
+date: "2023-02-28"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# REGRESSION
+```{r}
+setwd("C:/Masters/GitHub/Winter2022/Ramani-DSC520/data/")
+
+library(class)
+library(gmodels)
+library(ggplot2)
+library(purrr)
+library(factoextra)
+
+binary_df <- read.csv("binary-classifier-data.csv")
+trinary_df <- read.csv("trinary-classifier-data.csv")
+```
+
+\newpage
+## Plot the data from each dataset using a scatter plot.
+```{r}
+ggplot(binary_df,aes(x=x,y=y,color=label))+geom_point()+labs(title="Binary Classifier Scatter Plot")
+
+ggplot(trinary_df,aes(x=x,y=y,color=label))+geom_point()+labs(title="Trinary Classifier Scatter Plot")
+  
+```
+The k nearest neighbors algorithm categorizes an input value by looking at the labels for the k nearest points and assigning a category based on the most common label. In this problem, you will determine which points are nearest by calculating the Euclidean distance between two points. As a refresher, the Euclidean distance between two points: 
+Fitting a model is when you use the input data to create a predictive model. There are various metrics you can use to determine how well your model fits the data. For this problem, you will focus on a single metric, accuracy. Accuracy is simply the percentage of how often the model predicts the correct result. If the model always predicts the correct result, it is 100% accurate. If the model always predicts the incorrect result, it is 0% accurate.
+Fit a k nearest neighbors’ model for each dataset for k=3, k=5, k=10, k=15, k=20, and k=25. Compute the accuracy of the resulting models for each value of k. Plot the results in a graph where the x-axis is the different values of k and the y-axis is the accuracy of the model.
+
+
+## MODELS 
+```{r}
+k <- c(3,5,10,15,20,25)
+binary_accuracy <- NULL
+for(i in 1:6)
+{
+    cat("KNN Binary Classisfier:",k[i])
+    binary_knn<-knn(train=binary_df,test=binary_df,cl=as.factor(binary_df$label),k=k[i])
+    binary_table <- CrossTable(x=binary_df$label,y=binary_knn,prop.chisq = FALSE)
+    binary_accuracy[i] <-binary_table$prop.tbl[1,1]+binary_table$prop.tbl[2,2]
+} 
+binary_accuracy_df <- as.data.frame(binary_accuracy)
+ 
+
+trinary_accuracy <- NULL
+for(i in 1:6)
+{
+    cat("KNN Trinary Classisfier:",k[i])
+    
+    trinary_knn<-knn(train=trinary_df,test=trinary_df,cl=as.factor(trinary_df$label),k=k[i])
+    trinary_table <- CrossTable(x=trinary_df$label,y=trinary_knn,prop.chisq = FALSE)
+    trinary_accuracy[i] <-trinary_table$prop.tbl[1,1]+trinary_table$prop.tbl[2,2]
+} 
+
+trinary_accuracy_df <- as.data.frame(trinary_accuracy)
+```
+\newpage
+
+```{r}
+ggplot() + 
+geom_point(data=binary_accuracy_df,aes(x=k, y=binary_accuracy), color='blue') + geom_point(data=trinary_accuracy_df,aes(x=k, y=trinary_accuracy), color='orange') 
+```
+
+I don't think a linear classifier would work well on these datasets because the plots are not in a straight line. Neither variables have a visual correlation with being in one group or the other. 
+ 
+## How does the accuracy of your logistic regression classifier from last week compare?  Why is the accuracy different between these two methods?
+
+For the binary data set, week 10's accuracy was about 58%. This week it is about 97%. This is because, KNN is a non-parametric model whereas LR is a parametric model (finite number of parameters). KNN supports non-linear solutions where LR supports only linear solutions.
+
+\newpage
+
+# CLUSTERING
+
+```{r}
+setwd("C:/Masters/GitHub/Winter2022/Ramani-DSC520/data/")
+clustering_df <- read.csv("clustering-data.csv")
+```
+
+## Plot the dataset using a scatter plot.
+```{r}
+ggplot(clustering_df,aes(x=x,y=y))+geom_point()+labs(title="Clustering Data Scatter Plot")
+```
+
+## Fit the dataset using the k-means algorithm from k=2 to k=12. Create a scatter plot of the resultant clusters for each value of k.
+
+## Use the average distance from the center of each cluster as a measure of how well the model fits the data. To calculate this metric, simply compute the distance of each data point to the center of the cluster it is assigned to and take the average value of all of those distances.
+ 
+### Cluster k=2
+```{r echo=FALSE,message=FALSE,warning=FALSE, results = "hide"}
+k2 <- kmeans(clustering_df, centers=2, nstart=25)
+str(k2)
+k2
+k2_plot <- fviz_cluster(k2, clustering_df)
+k2_plot
+```
+### Cluster k=3
+```{r echo=FALSE,message=FALSE,warning=FALSE, results = "hide"}
+k3 <- kmeans(clustering_df, centers=3, nstart=25)
+str(k3)
+k3
+k3_plot <- fviz_cluster(k3, clustering_df)
+k3_plot
+```
+### Cluster k=4
+```{r echo=FALSE,message=FALSE,warning=FALSE, results = "hide"}
+k4 <- kmeans(clustering_df, centers=4, nstart=25)
+str(k4)
+k4
+k4_plot <- fviz_cluster(k4, clustering_df)
+k4_plot
+```
+
+### Cluster k=5
+```{r echo=FALSE,message=FALSE,warning=FALSE, results = "hide"}
+k5 <- kmeans(clustering_df, centers=5, nstart=25)
+str(k5)
+k5
+k5_plot <- fviz_cluster(k5, clustering_df)
+k5_plot
+```
+
+### Cluster k=6
+```{r echo=FALSE,message=FALSE,warning=FALSE, results = "hide"}
+k6 <- kmeans(clustering_df, centers=6, nstart=25)
+str(k6)
+k6
+k6_plot <- fviz_cluster(k6, clustering_df)
+k6_plot
+```
+
+### Cluster k=7
+```{r echo=FALSE,message=FALSE,warning=FALSE, results = "hide"}
+k7 <- kmeans(clustering_df, centers=7, nstart=25)
+str(k7)
+k7
+k7_plot <- fviz_cluster(k7, clustering_df)
+k7_plot
+```
+
+### Cluster k=8
+```{r echo=FALSE,message=FALSE,warning=FALSE, results = "hide"}
+k8 <- kmeans(clustering_df, centers=8, nstart=25)
+str(k8)
+k8
+k8_plot <- fviz_cluster(k8, clustering_df)
+k8_plot
+```
+
+### Cluster k=9
+```{r echo=FALSE,message=FALSE,warning=FALSE, results = "hide"}
+k9 <- kmeans(clustering_df, centers=9, nstart=25)
+str(k9)
+k9
+k9_plot <- fviz_cluster(k9, clustering_df)
+k9_plot
+```
+
+### Cluster k=10
+```{r echo=FALSE,message=FALSE,warning=FALSE, results = "hide"}
+k10 <- kmeans(clustering_df, centers=10, nstart=25)
+str(k10)
+k10
+k10_plot <- fviz_cluster(k10, clustering_df)
+k10_plot
+```
+
+### Cluster k=11
+```{r echo=FALSE,message=FALSE,warning=FALSE, results = "hide"}
+k11 <- kmeans(clustering_df, centers=11, nstart=25)
+str(k11)
+k11
+k11_plot <- fviz_cluster(k11, clustering_df)
+k11_plot
+```
+
+### Cluster k=12
+```{r echo=FALSE,message=FALSE,warning=FALSE, results = "hide"}
+k12 <- kmeans(clustering_df, centers=12, nstart=25)
+str(k12)
+k12
+k12_plot <- fviz_cluster(k12, clustering_df)
+k12_plot
+```
+
+
+#Calculate this average distance from the center of each cluster for each value of k and plot it as a line chart where k is the x-axis and the average distance is the y-axis.
+```{r}
+set.seed(2345)
+wss <- function(k) {
+  kmeans(clustering_df, k, nstart = 10 )$tot.withinss
+}
+
+# Compute and plot wss for k = 1 to k = 15
+k.values <- 2:12
+
+# extract wss for 2-12 clusters
+wss_values <- map_dbl(k.values, wss)
+
+plot(k.values, wss_values,main="Average Euclidian Distance for k=2:12",
+       type="b", pch = 19, frame = FALSE, 
+       xlab="Number of clusters K",
+       ylab="Total within-clusters sum of squares")
+ 
+``` 
+ 
+## What is the elbow point for this dataset?
+The elbow point is k=5.
+At k=5, you stop getting as much accuracy per increase in k. 
