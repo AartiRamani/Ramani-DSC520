@@ -1,0 +1,1096 @@
+---
+title: "Final Project"
+author: "Aarti Ramani"
+date: "2023-02-28"
+output:
+    #pdf_document: default
+    #always_allow_html: yes
+html_document: default
+bibliography: citations.bib
+biblio-style: "apalike"
+link-citations: true 
+always_allow_html: yes
+editor_options: 
+  markdown: 
+    wrap: sentence
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(global.par = TRUE) 
+```
+
+## Project Topic: Airlines On-Time Performance, Delays, and Cancellations
+
+## Introduction:
+
+Airline cancellations or delays are one of the major causes for passenger inconvenience.
+With the publicly available dataset (huge datasets with around 16 million flights flown annually), using datascience I am hoping to gain meaningful insights into the best performing airlines and understanding the causes for delays and cancellations across different airline carriers.
+
+For the final project I would like to analyze airline data to identify different factors and their effects on a carrier's performance.
+As a performance measure, we would be exploring on-time arrivals, number of cancellations by carrier and also explore different reasons for a carrier delay.
+Data Science can help identify the major causes of delay and cancellations per carrier.
+Based on the outcome, carriers can take necessary actions to focus on the problem areas.
+
+## Problem statement addressed:
+
+This study would benefit airlines by comparing airline performances and predicting possibilities of delay based on aircraft/origin/destination and apply corrective measures to reduce cancellations and delays and to improve on-time performance.
+
+## Research Questions
+
+Following are the topics I would like to focus on as part of this project.
+
+1.  Are small carriers reliable in terms of lesser cancellations and delays?
+2.  Are the delays seasonal? If yes, which regions are most affected?
+3.  Does the time of day have any significance on delays?
+4.  Which carrier has the best on-time performance.
+5.  Which carrier has the least on-time performance.
+6.  Identifying the most common cancellation reason for all carriers.
+7.  Which carrier has the most number of cancellations.
+8.  Which carrier has the most number of delays.
+9.  What is the percentage of delays by reason.
+
+## Approach:
+
+I will be performing the following steps:
+
+1.  Data analysis - Gathering and understanding different datasets.
+2.  Data Cleaning and Transforming
+3.  Merge transformed/cleansed datasets
+4.  Data visualization/plotting
+
+## Addressing the problem
+
+Based on the outcomes from data analysis and visualization, I would like to identify the following:
+
+-   Which carriers are more likely to cause delays or cancellations.
+-   Which carriers are more reliable in terms of on-time performance.
+
+## Datasets
+
+Below data submitted by major carriers to department of transportation (DOT).
+
+-   Flights.csv
+-   UniqueCarriers.csv
+-   Airports.csv
+
+Data was collected by DOT's Bureau of Transportation Statistics for the year 2022.
+The purpose of this data is to analyze airline on-time performance reported by carriers.
+The datasets has around 40 fields in total of which I will be considering between 15 to 25 columns for analysis.
+
+## Datasets and Relationships:
+
+TABLE: **Flights.csv**
+
+Column Name                      | Data Type| Column Description
+---------------------------------| ---------| -----------------------------------------
+Year	                           |Integer   | Year of extracted flight data
+Quarter	                         |Integer   | Quarter 
+Month	                           |Integer   | Month of extracted flight data
+DayofMonth                       |Integer   | Day of month 
+DayOfWeek                        |Integer   | Day of Week
+FlightDate                       |Date      | Flight Date
+Marketing_Airline_Network        |Character | Marketing Carrier Airline Code
+Flight_Number_Marketing_Airline  |Integer   | Marketing Carrier Flight Number
+Operating_Airline                |Character | Operating Carrier Airline Code
+Tail_Number	                     |Integer   | Operating Carrier Tail Number
+Flight_Number_Operating_Airline  |Integer   | Operating Carrier Flight Number
+Origin	                         |Character | Origin Airport Code(Airports.csv )
+OriginCityName	                 |Character | Origin Airport City Name
+OriginState                      |Character | Origin Airport State Code
+OriginStateName                  |Character | Origin Airport State Name
+OriginWac                        |Integer   | Origin Airport Worlde Area Code
+Dest                             |Character | Destination Airport Code(Airports.csv )
+DestCityName                     |Character | Destination Airport City Name
+DestState                        |Character | Destination Airport State Code
+DestStateName                    |Character | Destination Airport State Name
+DestWac                          |Integer   | Destination Airport Worlde Area Code
+CRSDepTime                       |Integer   | CRS Departure Time (local time: hhmm)
+DepTime	                         |Integer   | Actual Departure Time(local time: hhmm)
+DepDelay	                       |Integer   | Difference in minutes between scheduled and actual departure time. Early departures show negative numbers.
+DepDelayMinutes	                 |Integer   | Difference in minutes between scheduled and actual departure time. Early departures set to 0
+DepDel15                         |Integer   | Departure Delay Indicator, 15 Minutes or More (1=Yes)
+TaxiOut                          |Integer   | Taxi Out Time, in Minutes
+WheelsOff                        |Integer   | Wheels Off Time (local time: hhmm)
+WheelsOn                         |Integer   | Wheels On Time (local time: hhmm)
+TaxiIn                           |Integer   | Taxi In Time, in Minutes
+CRSArrTime                       |Integer   | CRS Arrival Time (local time: hhmm)
+ArrTime	                         |Integer   | Actual Arrival Time (local time: hhmm)
+ArrDelay	                       |Integer   | Difference in minutes between scheduled and actual arrival time. Early arrivals show negative numbers.
+ArrDelayMinutes	                 |Integer   | Difference in minutes between scheduled and actual arrival time. Early arrivals set to 0.   
+ArrDel15	                       |Integer   | Arrival Delay Indicator, 15 Minutes or More (1=Yes)
+Cancelled	                       |Integer   | Cancelled Flight Indicator (1=Yes)
+CancellationCode                 |Integer   | Specifies The Reason For Cancellation
+Diverted                         |Integer   | Diverted Flight Indicator (1=Yes)
+CRSElapsedTime                   |Integer   | CRS Elapsed Time of Flight, in Minutes
+ActualElapsedTime                |Integer   | Elapsed Time of Flight, in Minutes
+AirTime                          |Integer   | Flight Time, in Minutes
+Flights	                         |Integer   | Number of Flights
+Distance                         |Integer   | Distance between airports (miles)
+DistanceGroup                    |Integer   | Distance Intervals, every 250 Miles, for Flight Segment
+CarrierDelay                     |Integer   | Carrier Delay, in Minutes
+WeatherDelay	                   |Integer   | Weather Delay, in Minutes
+NASDelay	                       |Integer   | National Air System Delay, in Minutes
+SecurityDelay	                   |Integer   | Security Delay, in Minutes
+LateAircraftDelay	               |Integer   | Late Aircraft Delay, in Minutes
+
+TABLE: **UniqueCarriers.csv**
+
+Column Name                      | Data Type| Column Description
+---------------------------------| ---------| -----------------------------------------
+Code                             | Character| Unique Airline Carrier Code
+Description                      | Character| Airline Carrier Code Description
+
+
+TABLE: **Airports.csv** 
+
+Column Name                      | Data Type| Column Description
+---------------------------------| ---------| -----------------------------------------
+Code                             | Character| Airport Code (IATA)
+Description                      | Character| Airport Code Description
+
+\newpage
+
+
+## Data Considerations:
+
+The following rows will be dropped from the dataset:
+
+-   Rows that do not qualify for delay or cancellation
+-   Rows with missing values for carrier, origin, destination, date and time of\
+    departure and arrival will be dropped.
+
+## Packages
+
+Following packages are required for the project:
+
+i.  dplyr
+ii. ggplot2
+iii. readr
+iv. tidyr
+
+## Data importing and cleaning
+
+### Packages
+
+```{r packages, message = FALSE, warning = FALSE}
+
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(RColorBrewer)
+library(reshape2) 
+library(pastecs)
+library(psych)
+library(plotly)
+library(corrplot)
+library(webshot)
+#library(shiny)
+
+```
+
+### Data importing
+
+```{r LoadData, message = FALSE, warning = FALSE}
+## Set the working directory to the root of your DSC 520 directory
+setwd("C:/Masters/GitHub/Winter2022/Ramani-DSC520/assignments/FinalProject/")
+
+
+#Merge flight data from Jan through Nov 2022 into a single dataframe
+list_of_files <- list.files(path="Data/DOT_Flight_Data/",
+                            recursive = TRUE,
+                            pattern = "\\.csv$",
+                            full.names = TRUE)
+ 
+merge_flights_df <- readr::read_csv(list_of_files, id = "fl_date") 
+nrow(merge_flights_df)
+head(merge_flights_df,5)
+
+
+cancellation_cd <- read_csv(file="Data/DOT/L_CANCELLATION.csv")
+nrow(cancellation_cd)
+head(cancellation_cd,2)
+
+unique_carrier <- read_csv(file="Data/DOT/L_UNIQUE_CARRIERS.csv") 
+nrow(unique_carrier)
+head(unique_carrier,2)
+
+airport_cd <- read_csv(file="Data/DOT/L_AIRPORT.csv") 
+nrow(airport_cd)
+head(airport_cd,2) 
+```
+
+### Data Transformation and Cleaning
+
+```{r Transform, message = FALSE, warning = FALSE}
+#Removing null rows from the dataset
+merge_flights_df <- merge_flights_df[,colSums(is.na(merge_flights_df))<nrow(merge_flights_df)]
+
+#Cancellation reason in the flight dataset is represented as A, B, C and D.
+#Looking up the cancellation code against the cancellation dataset and adding  
+#cancellation description to the flight dataframe.
+carrier_performance_df <- merge_flights_df
+
+carrier_performance_df$CANCELLATION_REASON <- 
+  cancellation_cd$Description[match(carrier_performance_df$CANCELLATION_CODE, 
+                                    cancellation_cd$Code)]
+ 
+#Carrier codes in flight dataset are represented as 2 character airline carrier codes.
+#Looking up the carrier code against the unique carrier dataset and updating the 
+#code by carrier name in the flight dataframe for both operating and marketing carriers. 
+
+carrier_performance_df$MKT_UNIQUE_CARRIER_NAME <- 
+  unique_carrier$Description[match(carrier_performance_df$MKT_UNIQUE_CARRIER, 
+                                   unique_carrier$Code)]
+carrier_performance_df$OP_UNIQUE_CARRIER_NAME <-
+  unique_carrier$Description[match(carrier_performance_df$OP_UNIQUE_CARRIER, 
+                                   unique_carrier$Code)]
+
+#Updating blank arrival delay to 0
+carrier_performance_df[is.na(merge_flights_df$DISTANCE),]$DISTANCE = 0
+carrier_performance_df[is.na(merge_flights_df$ARR_DELAY),]$ARR_DELAY = 0
+carrier_performance_df[is.na(merge_flights_df$CARRIER_DELAY),]$CARRIER_DELAY = 0
+carrier_performance_df[is.na(merge_flights_df$WEATHER_DELAY),]$WEATHER_DELAY = 0
+carrier_performance_df[is.na(merge_flights_df$NAS_DELAY),]$NAS_DELAY = 0
+carrier_performance_df[is.na(merge_flights_df$SECURITY_DELAY),]$SECURITY_DELAY = 0
+carrier_performance_df[is.na(merge_flights_df$LATE_AIRCRAFT_DELAY),]$LATE_AIRCRAFT_DELAY = 0
+
+# Transforming Data
+
+# Update day_of_week from a number to Day
+carrier_performance_df <- carrier_performance_df %>% mutate(DAY_OF_WEEK = case_when(
+  DAY_OF_WEEK==1~"Monday",
+  DAY_OF_WEEK==2~"Tuesday",
+  DAY_OF_WEEK==3~"Wednesday",
+  DAY_OF_WEEK==4~"Thursday",
+  DAY_OF_WEEK==5~"Friday",
+  DAY_OF_WEEK==6~"Saturday",
+  DAY_OF_WEEK==7~"Sunday"))
+
+# Add a new column with the performance status
+carrier_performance_df <- carrier_performance_df %>% mutate(
+  STATUS = case_when(
+    CANCELLED==1~"Cancelled",
+    DIVERTED==1~"Diverted",
+    ARR_DELAY<=15~"On-Time",
+    ARR_DELAY>15~"Delayed"))
+
+
+# Add a new column with the Delay Flag
+carrier_performance_df <- carrier_performance_df %>% mutate(
+  DELAYED = case_when(
+    ARR_DELAY>15~TRUE,
+    ARR_DELAY<=15~FALSE)) 
+
+
+# Add a new column with the Delay Reason
+carrier_performance_df <- carrier_performance_df %>% mutate(
+  DELAY_REASON = case_when(
+    ((DELAYED == TRUE) & (CARRIER_DELAY!=0))~"Carrier",
+    ((DELAYED == TRUE) & (LATE_AIRCRAFT_DELAY!=0))~"LateAircraft",
+    ((DELAYED == TRUE) & (WEATHER_DELAY!=0))~"Weather",
+    ((DELAYED == TRUE) & (NAS_DELAY!=0))~"Nas",
+    ((DELAYED == TRUE) & (SECURITY_DELAY!=0))~"Security"))
+
+#Since the number of rows are very high (over 6 million), 
+#we'll narrow the research to flights between 20 major airports.
+
+#Filtering ORIGIN airports
+carrier_performance_df <- 
+  carrier_performance_df[carrier_performance_df$ORIGIN == "ORD" 
+                                 | carrier_performance_df$ORIGIN == "ATL" 
+                                 | carrier_performance_df$ORIGIN == "DFW" 
+                                 | carrier_performance_df$ORIGIN == "DEN" 
+                                 | carrier_performance_df$ORIGIN == "EWR" 
+                                 | carrier_performance_df$ORIGIN == "LAX" 
+                                 | carrier_performance_df$ORIGIN == "IAH" 
+                                 | carrier_performance_df$ORIGIN == "PHX" 
+                                 | carrier_performance_df$ORIGIN == "DTW" 
+                                 | carrier_performance_df$ORIGIN == "SFO" 
+                                 | carrier_performance_df$ORIGIN == "LAS" 
+                                 | carrier_performance_df$ORIGIN == "DEN" 
+                                 | carrier_performance_df$ORIGIN == "ORD" 
+                                 | carrier_performance_df$ORIGIN == "JFK" 
+                                 | carrier_performance_df$ORIGIN == "CLT" 
+                                 | carrier_performance_df$ORIGIN == "LGA" 
+                                 | carrier_performance_df$ORIGIN == "MCO" 
+                                 | carrier_performance_df$ORIGIN == "MSP" 
+                                 | carrier_performance_df$ORIGIN == "BOS" 
+                                 | carrier_performance_df$ORIGIN == "PHL",]
+
+nrow(carrier_performance_df)
+#Filtering DESTINATION airports
+carrier_performance_df <- 
+  carrier_performance_df[carrier_performance_df$DEST == "ORD" 
+                                 | carrier_performance_df$DEST == "ATL" 
+                                 | carrier_performance_df$DEST == "DFW" 
+                                 | carrier_performance_df$DEST == "DEN" 
+                                 | carrier_performance_df$DEST == "EWR" 
+                                 | carrier_performance_df$DEST == "LAX" 
+                                 | carrier_performance_df$DEST == "IAH" 
+                                 | carrier_performance_df$DEST == "PHX" 
+                                 | carrier_performance_df$DEST == "DTW" 
+                                 | carrier_performance_df$DEST == "SFO" 
+                                 | carrier_performance_df$DEST == "LAS" 
+                                 | carrier_performance_df$DEST == "DEN" 
+                                 | carrier_performance_df$DEST == "ORD" 
+                                 | carrier_performance_df$DEST == "JFK" 
+                                 | carrier_performance_df$DEST == "CLT" 
+                                 | carrier_performance_df$DEST == "LGA" 
+                                 | carrier_performance_df$DEST == "MCO" 
+                                 | carrier_performance_df$DEST == "MSP" 
+                                 | carrier_performance_df$DEST == "BOS" 
+                                 | carrier_performance_df$DEST == "PHL",]
+
+nrow(carrier_performance_df)
+
+#Airport codes in flight dataset are represented as 3 character airport codes.
+#Looking up the airport codes against the airport dataset and updating the 
+#airport code by name in the flight dataframe for origin and destination columns.
+
+#carrier_performance_df$ORIGIN_AIRPORT <- 
+#  airport_cd$Description[match(carrier_performance_df$ORIGIN, airport_cd$Code)]
+#carrier_performance_df$DEST_AIRPORT <- 
+#  airport_cd$Description[match(carrier_performance_df$DEST, airport_cd$Code)]
+
+# Selecting relevant columns from flights data
+carrier_performance_df <- 
+  carrier_performance_df[c("YEAR","QUARTER","MONTH","DAY_OF_MONTH","DAY_OF_WEEK",
+                        "FL_DATE","MKT_UNIQUE_CARRIER","OP_UNIQUE_CARRIER",
+                        "OP_UNIQUE_CARRIER_NAME","MKT_UNIQUE_CARRIER_NAME",
+                        "ORIGIN","ORIGIN_CITY_NAME","ORIGIN_STATE_ABR",
+                        "ORIGIN_STATE_NM","DEST","DEST_CITY_NAME","DEST_STATE_ABR",
+                        "DEST_STATE_NM","DEP_DELAY","TAXI_OUT","TAXI_IN","ARR_DELAY",
+                        "CANCELLED","CANCELLATION_CODE","CANCELLATION_REASON",
+                        "DIVERTED","DISTANCE","CARRIER_DELAY","WEATHER_DELAY",
+                        "NAS_DELAY","SECURITY_DELAY","LATE_AIRCRAFT_DELAY",
+                        "DELAYED" ,"DELAY_REASON","STATUS")]
+
+```
+
+Validating transformed data
+
+```{r Validation, include = FALSE, message = FALSE, warning = FALSE, echo=FALSE}
+print(paste('Final Dataset - No. of rows : ', nrow(carrier_performance_df)))
+
+print('DELAYED Data rows') 
+carrier_performance_df %>% count(DELAYED, sort = TRUE)
+
+print('Data rows by Delay Reasons') 
+carrier_performance_df %>% count(DELAY_REASON, sort = TRUE)
+
+print('Counts by Status') 
+carrier_performance_df %>% count(STATUS, sort = TRUE)
+
+print('Counts by Operating Carrier') 
+carrier_performance_df %>% count(OP_UNIQUE_CARRIER_NAME, sort = FALSE)
+
+print('Counts by Marketing Carrier')
+carrier_performance_df %>% count(MKT_UNIQUE_CARRIER_NAME, sort = FALSE)
+
+print('Counts by Cancellation Reason')
+carrier_performance_df %>% count(CANCELLATION_REASON, sort = FALSE)
+
+print('Counts by Delay Reason')
+carrier_performance_df %>% count(DELAY_REASON, sort = FALSE)
+
+print('Counts by Status')
+carrier_performance_df %>% count(STATUS, sort = FALSE)
+
+```
+
+### What does the final data set look like?
+
+```{r FinalData}
+head(carrier_performance_df,5)
+names(carrier_performance_df)
+```
+
+
+### What information is not self-evident?
+
+Initial thoughts:
+I would like to see if there are weather delays or cancellations specific to a time of year. If yes, I would like to see if it can be isolated to a particular airport or carrier.Also, I am hoping to evaluate the reason reported.
+Was it reported as a weather delay or a NAS delay.
+This would probably give an option to see which carrier has reported the most number of NAS delays during bad weather.
+
+Current thoughts:
+There is not sufficient data for weather to relate to delay/cancellation reason.
+It would be good to have weather information in the dataset to build a relation and 
+analyze further.
+
+
+### What are different ways you could look at this data ?
+
+I would like to perform the following:
+
+1.  Percentages of flights scheduled and flown per airline.
+
+2.  Percentages of flights scheduled vs delayed per airline.
+
+3.  Identify the correlations between variables and perform further analysis based on the outcomes.
+
+### Do you plan to slice and dice the data?
+
+For the purposes of this analysis, I am considering flights with arrival time less than 15 minutes as on-time.
+
+I am splitting dataset into 2 categories.
+
+1.  no cancellations and delays (on-time performace)
+
+2.  cancellations, delays
+
+```{r SplitData,message = FALSE, warning = FALSE}
+carrier_on_time_performance_df <-
+  carrier_performance_df[(is.na(carrier_performance_df$CANCELLATION_CODE)&
+                            carrier_performance_df$ARR_DELAY <= 15),]
+
+carrier_cancel_or_delay_df <-
+  carrier_performance_df[!(is.na(carrier_performance_df$CANCELLATION_CODE)&
+                            carrier_performance_df$ARR_DELAY <= 15),]
+
+#Further splitting dataframes for delays and cancellations.
+
+#Delays Dataset
+ 
+carrier_delay_df <- 
+  carrier_cancel_or_delay_df[carrier_cancel_or_delay_df$ARR_DELAY > 15,]
+ 
+#Cancel Dataset
+ 
+carrier_cancelled_df <- 
+  carrier_cancel_or_delay_df[!is.na(carrier_cancel_or_delay_df$CANCELLATION_CODE),]
+```
+
+```{r, echo=FALSE}
+print(paste('No. of rows in complte DF : ', nrow(carrier_performance_df))) 
+print(paste('No. of rows in delay DF : ', nrow(carrier_delay_df)))
+print(paste('No. of rows in cancelled DF : ', nrow(carrier_cancelled_df)))
+print(paste('No. of rows in on-time performance DF : ', nrow(carrier_on_time_performance_df)))
+
+```
+
+### How could you summarize your data to answer key questions?
+
+Calculating the correlation and covariance are great ways to summarize my data to answer key questions.
+Results from the summary function would also help.
+In addition, finding the maximum, minimum, mean, and median values for delays will provide some more information.
+
+STATISTICAL ANALYSIS
+
+```{r Statistics,message = FALSE, warning = FALSE}
+ 
+summary(carrier_performance_df)
+```
+
+```{r, echo=FALSE}
+ 
+print('               VARIANCE                       ') 
+
+print(paste('Distance            : ',var((carrier_performance_df$DISTANCE), na.rm=TRUE)))
+
+print(paste('Arrival Delay       : ',var((carrier_performance_df$ARR_DELAY), na.rm=TRUE)))
+
+print(paste('Carrier Delay       : ',var((carrier_performance_df$CARRIER_DELAY), na.rm=TRUE)))
+
+print(paste('Weather Delay       : ',var((carrier_performance_df$WEATHER_DELAY), na.rm=TRUE)))
+
+print(paste('NAS Delay           : ',var((carrier_performance_df$NAS_DELAY), na.rm=TRUE)))
+
+print(paste('Security Dela       : ',var((carrier_performance_df$SECURITY_DELAY), na.rm=TRUE)))
+
+print(paste('Late Aircraft Delay : ',var((carrier_performance_df$LATE_AIRCRAFT_DELAY), na.rm=TRUE)))
+
+print('           STANDARD DEVIATION             ')
+
+print(paste('Distance            : ',sd((carrier_performance_df$DISTANCE), na.rm=TRUE)))
+
+print(paste('Arrival Delay       : ',sd((carrier_performance_df$ARR_DELAY), na.rm=TRUE)))
+
+print(paste('Carrier Delay       : ',sd((carrier_performance_df$CARRIER_DELAY), na.rm=TRUE)))
+
+print(paste('Weather Delay       : ',sd((carrier_performance_df$WEATHER_DELAY), na.rm=TRUE)))
+
+print(paste('NAS Delay           : ',sd((carrier_performance_df$NAS_DELAY), na.rm=TRUE)))
+
+print(paste('Security Dela       : ',sd((carrier_performance_df$SECURITY_DELAY), na.rm=TRUE)))
+
+print(paste('Late Aircraft Delay : ',sd((carrier_performance_df$LATE_AIRCRAFT_DELAY), na.rm=TRUE)))
+  
+```
+
+The average arrival delay is only around 6 minutes.
+We can see that the median value is -5 minutes, suggesting the majority of flights actually arrive earlier than their expected time of arrival.
+
+```{r Summary,message = FALSE, warning = FALSE}
+## SUMMARY
+describe(head(carrier_performance_df,5000))
+
+stat.desc(head(carrier_performance_df$ARR_DELAY,5000), basic = TRUE, norm = TRUE)
+ 
+```
+
+Skew and Kurtosis are both non-zero and positive for the top 5000 rows. 
+A positive kurtosis represents
+a pointy and heavy-tailed distribution and a positive skew represents a right skew.
+
+
+CORRELATION
+
+```{r Correlation,message = FALSE, warning = FALSE}
+delay_cormatrix <- cor(carrier_performance_df$DEP_DELAY,
+                       carrier_performance_df$ARR_DELAY,
+                       use = "complete.obs")
+
+corr_df <- 
+    carrier_performance_df[,c("MONTH","DEP_DELAY","ARR_DELAY","DIVERTED",
+                              "DISTANCE","CARRIER_DELAY","WEATHER_DELAY",
+                              "NAS_DELAY","SECURITY_DELAY","LATE_AIRCRAFT_DELAY")]
+
+
+cormatrix <- cor(corr_df,use = "complete.obs")
+corrplot(cormatrix, method="color")
+ 
+```
+
+## Plots & Tables
+
+Plots that I would like to explore:
+
+i.  Scatter plot
+ii. Pie chart
+iii. Histogram
+iv. Boxplot
+
+I will create tables with the following data:
+A summary table of on-time performance, delays, and cancellations per carrier.
+
+### What types of plots and tables will help you to illustrate the findings to your questions?
+
+### TABLES
+
+```{r Tables,message = FALSE, warning = FALSE, echo=FALSE}
+##TOTAL PERFORMANCE STATS
+flight_totals_df <- 
+  carrier_performance_df %>% group_by(OP_UNIQUE_CARRIER,OP_UNIQUE_CARRIER_NAME) %>% 
+  count() 
+
+names(flight_totals_df) <- c("OP_UNIQUE_CARRIER","OP_UNIQUE_CARRIER_NAME","TOTAL")
+
+flight_totals_df["PERCENTAGE"] <- round(flight_totals_df$TOTAL/sum(flight_totals_df$TOTAL)*100,2)
+
+##DELAY STATS BY CARRIER
+flight_stats <- 
+  carrier_performance_df %>% 
+  group_by(OP_UNIQUE_CARRIER,OP_UNIQUE_CARRIER_NAME,DELAY_REASON) %>% 
+  count() 
+
+names(flight_stats) <- c("OP_UNIQUE_CARRIER","OP_UNIQUE_CARRIER_NAME","DELAY_REASON","COUNT")
+
+flight_stats["PERCENTAGE"]<-NA
+
+for(row in 1:nrow(flight_stats)) { 
+  total <- 
+    flight_totals_df[flight_stats[row,]$OP_UNIQUE_CARRIER==flight_totals_df$OP_UNIQUE_CARRIER,]$TOTAL
+  flight_stats[row,]$PERCENTAGE <- round(flight_stats[row,]$COUNT/total*100,2) 
+}
+
+##CANCELLATION STATS BY CARRIER
+flight_cancel <- 
+  carrier_performance_df %>% 
+  group_by(OP_UNIQUE_CARRIER,OP_UNIQUE_CARRIER_NAME,CANCELLATION_REASON) %>% 
+  count() 
+
+names(flight_cancel) <- c("OP_UNIQUE_CARRIER","OP_UNIQUE_CARRIER_NAME","CANCELLATION_REASON","COUNT")
+
+flight_cancel["PERCENTAGE"]<-NA
+
+for(row in 1:nrow(flight_cancel)) { 
+  total <- 
+    flight_totals_df[flight_cancel[row,]$OP_UNIQUE_CARRIER==flight_totals_df$OP_UNIQUE_CARRIER,]$TOTAL
+  flight_cancel[row,]$PERCENTAGE <- round(flight_cancel[row,]$COUNT/total*100,2) 
+}
+
+#PERFORMANCE STATS BY CARRIER  
+flight_status <- 
+  carrier_performance_df %>% 
+  group_by(OP_UNIQUE_CARRIER,OP_UNIQUE_CARRIER_NAME,STATUS) %>% 
+  count() 
+
+names(flight_status) <- c("OP_UNIQUE_CARRIER","OP_UNIQUE_CARRIER_NAME","STATUS","COUNT")
+flight_status['PERCENTAGE'] <- NA
+
+
+for(row in 1:nrow(flight_status)) { 
+  total <- 
+    flight_totals_df[flight_status[row,]$OP_UNIQUE_CARRIER==flight_totals_df$OP_UNIQUE_CARRIER,]$TOTAL
+  flight_status[row,]$PERCENTAGE <- round(flight_status[row,]$COUNT/total*100,2) 
+}
+
+
+#OVERALL STATS BY STATUS  
+status_percentage <- 
+  carrier_performance_df %>% 
+  group_by(STATUS) %>% 
+  count() 
+
+names(status_percentage) <- c("STATUS","COUNT")
+status_percentage['PERCENTAGE'] <- NA
+
+total <- sum(status_percentage$COUNT)
+ 
+for(row in 1:nrow(status_percentage)) { 
+  status_percentage[row,]$PERCENTAGE <- round(status_percentage[row,]$COUNT/total*100,2) 
+}
+
+##TOTAL ORIGIN AIRPORT STATS
+flight_origin_totals_df <- 
+  carrier_performance_df %>% group_by(ORIGIN) %>% 
+  count() 
+
+names(flight_origin_totals_df) <- c("ORIGIN","TOTAL")
+
+flight_origin_totals_df["PERCENTAGE"] <- round(flight_origin_totals_df$TOTAL/sum(flight_origin_totals_df$TOTAL)*100,2)
+
+##Cancelled reason for ORIGIN AIRPORT 
+cancelled_status <- 
+  carrier_cancelled_df %>% 
+  group_by(ORIGIN,CANCELLATION_REASON,STATUS) %>% 
+  count() 
+
+names(cancelled_status) <- c("ORIGIN","CANCELLATION_REASON","STATUS","COUNT")
+
+cancelled_status["PERCENTAGE"]<-NA
+
+for(row in 1:nrow(cancelled_status)) { 
+  total <- 
+    flight_origin_totals_df[cancelled_status[row,]$ORIGIN==flight_origin_totals_df$ORIGIN,]$TOTAL
+  cancelled_status[row,]$PERCENTAGE <- round(cancelled_status[row,]$COUNT/total*100,2) 
+}
+
+##Delayed status for ORIGIN AIRPORT 
+delayed_status <- 
+  carrier_performance_df %>% 
+  group_by(ORIGIN,STATUS) %>% 
+  count() 
+
+names(delayed_status) <- c("ORIGIN","STATUS","COUNT")
+
+delayed_status["PERCENTAGE"]<-NA
+
+for(row in 1:nrow(delayed_status)) { 
+  total <- 
+    flight_origin_totals_df[delayed_status[row,]$ORIGIN==flight_origin_totals_df$ORIGIN,]$TOTAL
+  delayed_status[row,]$PERCENTAGE <- round(delayed_status[row,]$COUNT/total*100,2) 
+}
+
+ ##Delayed reason, status for ORIGIN AIRPORT 
+delayed_reason_status <- 
+  carrier_performance_df %>% 
+  group_by(ORIGIN,DELAY_REASON,STATUS) %>% 
+  count() 
+
+names(delayed_reason_status) <- c("ORIGIN","DELAY_REASON","STATUS","COUNT")
+
+delayed_reason_status["PERCENTAGE"]<-NA
+
+for(row in 1:nrow(delayed_reason_status)) { 
+  total <- 
+    flight_origin_totals_df[delayed_reason_status[row,]$ORIGIN==flight_origin_totals_df$ORIGIN,]$TOTAL
+  delayed_reason_status[row,]$PERCENTAGE <- round(delayed_reason_status[row,]$COUNT/total*100,2) 
+}
+
+```
+```{r PrintTables}
+flight_totals_df
+flight_stats
+flight_cancel
+flight_status
+status_percentage
+flight_origin_totals_df
+cancelled_status 
+delayed_status
+delayed_reason_status
+```
+
+## Plots
+
+### Pie Plot
+
+#### Airline Performance
+
+\
+As observed from the statistical analysis, the average arrival delay is only around 6 minutes. To capture this further, I've created a bar chart with the percentage of airline performance in 2022. Only 20.1% Delayed are delayed while 77.1% are on-time.
+
+```{r AirlinePerformancePie,message = FALSE, warning = FALSE}
+
+fig1 <- plot_ly(status_percentage, labels = ~STATUS, values = ~PERCENTAGE, type = 'pie',
+        textposition = 'inside',
+        textinfo = 'STATUS + PERCENTAGE',
+        text = ~paste(STATUS),
+        insidetextfont = list(color = '#FFFFFF'), 
+        marker = list(colors = colors,line = list(color = '#FFFFFF', width = 1)),
+        showlegend = FALSE)
+fig1 <- fig1 %>% layout(title = 'Overall Airline Performance for 2022',
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+fig1
+
+
+#tmpFile <- tempfile(fileext = ".png")
+#export(fig1, file = #tmpFile)
+
+fig2 <- plot_ly(flight_totals_df, labels = ~OP_UNIQUE_CARRIER, values = ~PERCENTAGE, type = 'pie',
+        textposition = 'inside',
+        textinfo = 'OP_UNIQUE_CARRIER + PERCENTAGE',
+        insidetextfont = list(color = '#FFFFFF'),
+        hoverinfo = 'text',
+        text = ~paste(OP_UNIQUE_CARRIER),
+        marker = list(colors = colors,line = list(color = '#FFFFFF', width = 1)),
+        showlegend = FALSE)
+fig2 <- fig2 %>% layout(title = 'Individual Carrier Performance (2022)',
+         xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+         yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE))
+
+fig2
+
+#tmpFile <- tempfile(fileext = ".png")
+#export(fig2, file = #tmpFile)
+```
+
+### Bar Plot
+
+#### Flight Stats by Operating Carrier
+
+```{r Bar, message = FALSE, warning = FALSE}
+
+airline_on_time_performance <- flight_status[flight_status$STATUS=='On-Time',]
+
+airline_on_time_performance <- airline_on_time_performance[order(airline_on_time_performance$PERCENTAGE,decreasing=TRUE),]
+
+
+
+fig1 <- plot_ly(airline_on_time_performance, x = ~OP_UNIQUE_CARRIER_NAME, 
+                y = ~PERCENTAGE, type = 'bar',text = ~paste(PERCENTAGE,'%'),
+                textposition = 'auto',
+                marker = list(color = 'rgb(158,202,225)',
+                              line = list(color = 'rgb(8,48,107)', width = 1.5)))
+fig1 <- fig1 %>% layout(title = "Airline On-Time Performance",
+         xaxis = list(title = "OPERATING AIRLINE",tickangle=60),
+         yaxis = list(title = "PERCENTAGE(%)"))
+fig1
+
+#tmpFile <- tempfile(fileext = ".png")
+#export(fig1, file = #tmpFile) 
+
+
+fig2 <- plot_ly(flight_status, x = ~OP_UNIQUE_CARRIER_NAME, y = ~PERCENTAGE, 
+               type = 'bar',text = ~paste(STATUS),  textposition = 'auto', 
+               name = ~STATUS, color = ~STATUS, colors = c('lightskyblue','steelblue','Firebrick2','skyblue3'))
+fig2 <- fig2 %>% layout(yaxis = list(title='Percentage(%)'),title = 'Overall Airline Performance',
+                      xaxis=list(title='Operating Airline',tickangle=60), barmode = 'stack')
+fig2
+
+#tmpFile <- tempfile(fileext = ".png")
+#export(fig2, file = #tmpFile) 
+
+
+```
+#### Delays
+##### Box Plot - Overall Delays per carrier
+
+```{r DelaysBox,message = FALSE, warning = FALSE}
+ 
+ggplot(carrier_delay_df, aes(x=ARR_DELAY, y=OP_UNIQUE_CARRIER))+ 
+  geom_boxplot(outlier.colour="orange", outlier.shape=16) + 
+  labs(title ="Airline Delays",
+       y = "Operating Airline", 
+       x = "Arrival Delay (minutes)") + coord_flip()
+```
+
+There are more delays due to carrier and late aircrafts than weather, NAS or security delays.
+
+### Histogram
+
+#### Histogram for Delay Reasons
+
+```{r DelaysHist,message = FALSE, warning = FALSE}
+
+carrier_performance_df[is.na(carrier_performance_df$CARRIER_DELAY),]$CARRIER_DELAY <- 0
+Carrier_Delay <- carrier_performance_df$CARRIER_DELAY
+
+carrier_performance_df[is.na(carrier_performance_df$LATE_AIRCRAFT_DELAY),]$LATE_AIRCRAFT_DELAY<-0
+LateAircraft_Delay <- carrier_performance_df$LATE_AIRCRAFT_DELAY
+
+carrier_performance_df[is.na(carrier_performance_df$NAS_DELAY),]$NAS_DELAY<-0
+NAS_Delay <- carrier_performance_df$NAS_DELAY
+
+carrier_performance_df[is.na(carrier_performance_df$WEATHER_DELAY),]$WEATHER_DELAY<-0
+Weather_Delay <- carrier_performance_df$WEATHER_DELAY
+
+carrier_performance_df[is.na(carrier_performance_df$SECURITY_DELAY),]$SECURITY_DELAY<-0
+Security_Delay <- carrier_performance_df$SECURITY_DELAY
+
+par(mar=c(5,5,5,5))
+par(mfrow = c(3, 2))
+h <- hist(Carrier_Delay, main = "Carrier Delays",xlab ="Delay in minutes", ylab="Count",col="Light Blue",xlim = c(0,2000))
+xfit<-seq(min(Carrier_Delay),max(Carrier_Delay),length=10)
+yfit<-dnorm(xfit,mean=mean(Carrier_Delay),sd=sd(Carrier_Delay))
+yfit <- yfit*diff(h$mids[1:2])*length(Carrier_Delay)
+lines(xfit, yfit, col="blue", lwd=2)
+
+h <- hist(LateAircraft_Delay, main = "Late Aircraft Delays", xlab = "Delay in minutes",ylab="Count",col="Light Blue",xlim = c(0,500))
+xfit<-seq(min(LateAircraft_Delay),max(LateAircraft_Delay),length=10)
+yfit<-dnorm(xfit,mean=mean(LateAircraft_Delay),sd=sd(LateAircraft_Delay))
+yfit <- yfit*diff(h$mids[1:2])*length(LateAircraft_Delay)
+lines(xfit, yfit, col="blue", lwd=2)
+
+
+h <- hist(NAS_Delay, main = "NAS Delays",xlab = "Delay in minutes",ylab="Count",col="Light Blue", xlim = c(0,200))
+xfit<-seq(min(NAS_Delay),max(NAS_Delay),length=10)
+yfit<-dnorm(xfit,mean=mean(NAS_Delay),sd=sd(NAS_Delay))
+yfit <- yfit*diff(h$mids[1:2])*length(NAS_Delay)
+lines(xfit, yfit, col="blue", lwd=2)
+
+h <- hist(Weather_Delay, main = "Weather Delays",xlab = "Delay in minutes", ylab="Count",col="Light Blue",xlim = c(0,300)) #, ylim=c(0, 100000),
+xfit<-seq(min(Weather_Delay),max(Weather_Delay),length=10)
+yfit<-dnorm(xfit,mean=mean(Weather_Delay),sd=sd(Weather_Delay))
+yfit <- yfit*diff(h$mids[1:2])*length(Weather_Delay)
+lines(xfit, yfit, col="blue", lwd=2)
+
+h <- hist(Security_Delay, main = "Security Delays", xlab = "Delay in minutes", ylab="Count",col="Light Blue",xlim = c(0,75)) 
+xfit<-seq(min(Security_Delay),max(Security_Delay),length=10)
+yfit<-dnorm(xfit,mean=mean(Security_Delay),sd=sd(Security_Delay))
+yfit <- yfit*diff(h$mids[1:2])*length(Security_Delay)
+lines(xfit, yfit, col="blue", lwd=2)
+ 
+```
+
+### Carrier with most delays by performance percentage
+
+```{r DelaysPercentage,message = FALSE, warning = FALSE}
+ 
+delayed_performance <- flight_status[flight_status$STATUS == 'Delayed',]
+delayed_performance <- delayed_performance[order(delayed_performance$PERCENTAGE,decreasing=TRUE),]
+
+
+fig <- plot_ly(delayed_performance, x = ~OP_UNIQUE_CARRIER_NAME, y = ~PERCENTAGE, 
+               type = 'bar',text = ~paste(PERCENTAGE,'%'), textposition = 'auto',
+               marker = list(color = 'rgb(158,202,225)',
+                           line = list(color = 'rgb(8,48,107)', width = 1.5)))
+fig <- fig %>% layout(title = "Airline with most Delays",
+         xaxis = list(title = "OPERATING AIRLINE"),
+         yaxis = list(title = "PERCENTAGE(%)"))
+fig <- fig %>% layout(xaxis = list(categoryorder = "total descending"))
+
+fig
+
+#tmpFile <- tempfile(fileext = ".png")
+#export(fig, file = #tmpFile) 
+
+```
+
+### Carriers vs Delay Reasons
+
+```{r DelaysCarrier,message = FALSE, warning = FALSE}
+              
+fig <- plot_ly(carrier_delay_df, x = ~OP_UNIQUE_CARRIER,y = ~ARR_DELAY,
+               color=~DELAY_REASON, type = 'scatter')
+fig <- fig %>% layout(title = "Carrier Delay Reasons",
+                      xaxis = list(title = "OPERATING AIRLINE"),
+                      yaxis = list(title = "ARRIVAL DELAY (mins)")) 
+
+fig
+
+#tmpFile <- tempfile(fileext = ".png")
+#export(fig, file = #tmpFile) 
+
+```
+
+Frontier Airlines has the most number of delays, followed by JetBlue Airways.
+Piedmont and Endeavor air have the least delays.
+
+### Origin Airport vs Arrival Delays
+
+```{r DelaysOrigin,message = FALSE, warning = FALSE}
+
+#tmpFile <- tempfile(fileext = ".png")
+#export(fig, file = tmpFile) 
+df <- delayed_status[delayed_status$STATUS=='Delayed',]
+
+fig <- plot_ly(df, x = ~ORIGIN, y = ~PERCENTAGE, 
+               type = 'bar',text = ~paste(PERCENTAGE,'%'), textposition = 'auto',
+               marker = list(color = 'rgb(158,202,225)',
+                           line = list(color = 'rgb(8,48,107)', width = 1.5)))
+fig <- fig %>% layout(title = "Airport with most Delays",
+         xaxis = list(title = "ORIGIN AIRPORT"),
+         yaxis = list(title = "PERCENTAGE(%)"))
+fig <- fig %>% layout(xaxis = list(categoryorder = "total descending"))
+
+fig
+
+```
+
+Orlando has the most number of delays for the given origin destination pairs available in the dataset.
+San Francisco (SFO) although one of the busiest airports has fewer delays than other airports.
+
+### Origin Airport vs Delay Reasons
+
+```{r DelayReasons,message = FALSE, warning = FALSE}
+
+df <- delayed_reason_status[delayed_reason_status$STATUS=="Delayed",] 
+
+fig <- plot_ly(df, x = ~ORIGIN,y = ~PERCENTAGE,color=~DELAY_REASON,type = 'bar')
+fig <- fig %>% layout(title = "Airport Delay Percentage by Origin Airport",
+                      xaxis = list(title = "ORIGIN AIRPORT"),
+                      yaxis = list(title = "PERCENTAGE(%)")) 
+fig
+ 
+```
+
+#### Cancellations
+
+#### Histogram - Overall cancellations
+
+```{r CancelHist,message = FALSE, warning = FALSE}
+
+fig <- plot_ly(carrier_cancelled_df, x = ~CANCELLATION_REASON,type = 'histogram')
+fig <- fig %>% layout(title = "Cancellation Reasons",
+                      xaxis = list(title = "Cancellation Reason"),
+                      yaxis = list(title = "Count")) 
+fig
+
+#tmpFile <- tempfile(fileext = ".png")
+#export(fig, file = #tmpFile) 
+
+```
+
+#### Carriers vs Cancellation Reasons
+
+```{r CancelReason,message = FALSE, warning = FALSE}
+
+ggplot(carrier_cancelled_df, aes(x=MONTH, fill=CANCELLATION_REASON)) + 
+  geom_histogram(bins=15,position = "dodge") + xlab("Month") + ylab("Count") + 
+  scale_x_continuous(breaks = seq(1, 12, by = 1)) + 
+  ggtitle("Cancellations per month")
+
+ 
+#ggplot(carrier_cancelled_df, aes(OP_UNIQUE_CARRIER,MONTH,fill=CANCELLATION_REASON)) +
+#  geom_bar(stat="identity", position = "dodge") +
+#  ggtitle("Cancellations by Carrier") + xlab("Operating Airline") + ylab("Month") 
+
+
+
+fig <- plot_ly(carrier_cancelled_df, x = ~OP_UNIQUE_CARRIER, 
+               y = ~MONTH,color=~CANCELLATION_REASON,type = 'bar')
+fig <- fig %>% layout(title = "Airline with most Cancellations",
+                      xaxis = list(title = "OPERATING AIRLINE"),
+                      yaxis = list(title = "COUNT")) 
+fig
+
+#tmpFile <- tempfile(fileext = ".png")
+#export(fig, file = #tmpFile) 
+
+```
+
+Weather is a major reason for cancellation in winters (January and February).
+Carrier cancellations are also high during this period.
+
+#### Airport vs Cancellation Reasons
+
+```{r AirportCancel,message = FALSE, warning = FALSE}
+
+fig <- plot_ly(cancelled_status, x = ~ORIGIN, 
+               y = ~PERCENTAGE,color=~CANCELLATION_REASON,type = 'bar')
+fig <- fig %>% layout(title = "Airport with most Cancellations",
+                      xaxis = list(title = "Origin Airport"),
+                      yaxis = list(title = "Percentage(%)")) 
+fig
+#tmpFile <- tempfile(fileext = ".png")
+#export(fig, file = #tmpFile) 
+
+```
+
+### Scatter Plot
+
+```{r Scatter,message = FALSE, warning = FALSE}
+
+fig <- plot_ly(carrier_delay_df, x = ~DEP_DELAY, 
+               y = ~ARR_DELAY,type = 'scatter')
+fig <- fig %>% layout(title = "Departure vs Arrival Delay",
+                      xaxis = list(title = "Departure Delay"),
+                      yaxis = list(title = "Arrival Delay")) 
+fig
+#tmpFile <- tempfile(fileext = ".png")
+#export(fig, file = #tmpFile) 
+
+```
+
+### What do you not know how to do right now that you need to learn to answer your questions?
+
+I would like to learn more on the machine learning concepts to use in my final project.
+
+### Do you plan on incorporating any machine learning techniques to answer your research questions? Explain.
+
+Not at this time, but would like to consider incorporating them based on week 11 and 12 learnings.
+
+## Questions
+
+It is unclear if I would be able to recommend the right area of focus for better performance, to the airlines.
+Delays are high For example: If the majority of delays are due to NAS - National Air System Delay, it could mean there was an issue in one or more areas such as mechanical, crew, airport operations etc.
+I would need to identify another dataset that logs the maintenance or operational issues by carrier.
+This information could be hard to get as it is carrier specific and probably not allowed to be made public.
+
+## Outcomes
+
+1.  Are small carriers reliable in terms of lesser cancellations and delays?
+    Frontier has the maximum number of delays whereas Piedmont has the least delays.
+    It is unclear if small carriers are more reliable.
+
+2.  Which carrier has the best on-time performance.
+    American Airlines Inc, Delta Airlines and United Airlines have the best performance.
+
+3.  Which carrier has the least on-time performance.
+    Allegiant Air,Air Wisconsin Airlines Corp , Piedmont Airlines , Horizon Air ,GoJet Airlines LLC have the least on-time performance
+
+4.  Identifying the most common cancellation reason for all carriers.
+    Based on thre 1 million rows of data, weather cancellations are the most common.
+
+5.  Which carrier has the most number of cancellations.
+    Air Wisconsin has the most cancellations.
+
+6.  Which carrier has the most number of delays.
+    Frontier Airlines has the most delays.
+
+7.  What is the percentage of delays by reason.
+
+```{r}
+
+head(flight_stats,20)
+
+```
+
+## Limitations
+
+The dataset used for this analysis has around 6 million rows.
+For purposes of analysis, I stripped data to 1 million rows.
+The outcomes mentioned could change with more data.
+Restricting analysis to major airports could be omitting many performance aspects of airlines.
+It would be nice to run the analysis with years of data to average the findings.
+The huge size of dataset made the process extremely slow with several application crashes.
+Moreover, another inherent challenge of the dataset was that there were limited variables that could be used.
+Many columns were inapplicable to the analysis (i.e. TAXI_OUT, TAXI_IN, AIR_TIME etc. ) and so the analysis was done on limited variables.
+Additional information such as weather, NAS issue etc., could open more areas for analysis.
+
+## Conclusion
+
+It was very exciting for me to analyze this dataset.
+I found myself surprised at several instances.
+I assumed most cancellations would be because of weather but on adding more parameters in the process of data cleaning, I noticed that most cancellations are actually due to Carrier and not weather.
+I wasn''t able to show this in the analysis due to data size restrictions.
+This was a great experience in gaining better understanding on how to work with datasets and understanding the significance of each step.
+As next steps, I would like to calculate the delay percentage of flights at each interval of arrival delay such as (0-15, \<15, \>15 - \<30, \>30) to validate the average delay time.
+
+## Citations
+
+[@airlinedataset]
